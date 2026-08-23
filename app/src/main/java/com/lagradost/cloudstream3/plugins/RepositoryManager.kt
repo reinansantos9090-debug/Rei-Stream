@@ -101,18 +101,11 @@ object RepositoryManager {
         arrayOf(
             RepositoryData(
                 "Rei Anime",
-                "https://raw.githubusercontent.com/reinansantos9090-debug/Rei-Stream-Extensions/builds/repo.json"
-            ),
-            RepositoryData(
-                "Rei-Stream Repositório PT-BR",
-                "https://raw.githubusercontent.com/recloudstream/cloudstream-extensions-br/builds/repo.json"
-            ),
-            RepositoryData(
-                "English Providers",
-                "https://raw.githubusercontent.com/recloudstream/cloudstream-extensions/builds/repo.json"
+                "https://is.gd/reianime"
             )
         )
     }
+
 
 
     private val GH_REGEX =
