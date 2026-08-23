@@ -519,30 +519,30 @@ class HomeViewModel : ViewModel() {
                 return@ioSafe
             }
 
-             val api = getApiFromNameNull(preferredApiName)
-            if (preferredApiName == noneApi.name) {
-                if (fromUI) DataStoreHelper.currentHomePage = noneApi.name
+        val api = getApiFromNameNull(preferredApiName)
+        if (preferredApiName == noneApi.name) {
+            if (fromUI) DataStoreHelper.currentHomePage = noneApi.name
+            loadAndCancel(noneApi)
+        } else if (preferredApiName == randomApi.name) {
+            val validAPIs = context?.filterProviderByPreferredMedia()
+            if (validAPIs.isNullOrEmpty()) {
                 loadAndCancel(noneApi)
-            } else if (preferredApiName == randomApi.name) {
-                val validAPIs = context?.filterProviderByPreferredMedia()
-                if (validAPIs.isNullOrEmpty()) {
-                    loadAndCancel(noneApi)
-                } else {
-                    val apiRandom = validAPIs.random()
-                    loadAndCancel(apiRandom)
-                    if (fromUI) DataStoreHelper.currentHomePage = apiRandom.name
-                }
-            } else if (api == null) {
-                if (PluginManager.loadedOnlinePlugins || PluginManager.isSafeMode()) {
-                    loadAndCancel(noneApi)
-                } else {
-                    _page.postValue(Resource.Loading())
-                }
             } else {
-                if (fromUI) DataStoreHelper.currentHomePage = api.name
-                loadAndCancel(api)
+                val apiRandom = validAPIs.random()
+                loadAndCancel(apiRandom)
+                if (fromUI) DataStoreHelper.currentHomePage = apiRandom.name
             }
-            reloadAccount()
+        } else if (api == null) {
+            if (PluginManager.loadedOnlinePlugins || PluginManager.isSafeMode()) {
+                loadAndCancel(noneApi)
+            } else {
+                _page.postValue(Resource.Loading())
+            }
+        } else {
+            if (fromUI) DataStoreHelper.currentHomePage = api.name
+            loadAndCancel(api)
         }
+        reloadAccount()
     }
+}
 }
