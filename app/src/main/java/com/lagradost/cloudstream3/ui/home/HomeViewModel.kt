@@ -502,22 +502,22 @@ class HomeViewModel : ViewModel() {
 
     // only save the key if it is from UI, as we don't want internal functions changing the setting
     fun loadAndCancel(
-        preferredApiName: String?,
-        forceReload: Boolean = true,
-        fromUI: Boolean = false
-    ) =
-        ioSafe {
-            //println("trying to load $preferredApiName")
-            // Since plugins are loaded in stages this function can get called multiple times.
-            // The issue with this is that the homepage may be fetched multiple times while the first request is loading
-            // api?.let { expandable[it.name]?.list?.list?.isNotEmpty() } == true
-            val currentPage = page.value
+    preferredApiName: String?,
+    forceReload: Boolean = true,
+    fromUI: Boolean = false
+) =
+    ioSafe {
+        //println("trying to load $preferredApiName")
+        // Since plugins are loaded in stages this function can get called multiple times.
+        // The issue with this is that the homepage may be fetched multiple times when opening app.
+        // api?.let { expandable[it.name]?.list?.list?.isNotEmpty() } == true
+        val currentPage = page.value
 
-                        // if we don't need to reload and we have a valid homepage or currently loading the same thing then return
-            val currentLoading = isCurrentlyLoadingName
-            if (!forceReload && (currentPage is Resource.Success && currentPage.value.isNotEmpty() || (currentLoading != null && currentLoading == preferredApiName))) {
-                return@ioSafe
-            }
+        // if we don't need to reload and we have a valid homepage loaded return
+        val currentLoading = isCurrentlyLoadingName
+        if (!forceReload && (currentPage is Resource.Success && currentPage.value.isNotEmpty())) {
+            return@ioSafe
+        }
 
         val api = getApiFromNameNull(preferredApiName)
         if (preferredApiName == noneApi.name) {
@@ -544,5 +544,4 @@ class HomeViewModel : ViewModel() {
         }
         reloadAccount()
     }
-}
 }
