@@ -502,46 +502,90 @@ class HomeViewModel : ViewModel() {
 
     // only save the key if it is from UI, as we don't want internal functions changing the setting
     fun loadAndCancel(
-    preferredApiName: String?,
-    forceReload: Boolean = true,
-    fromUI: Boolean = false
-) =
-    ioSafe {
-        //println("trying to load $preferredApiName")
-        // Since plugins are loaded in stages this function can get called multiple times.
-        // The issue with this is that the homepage may be fetched multiple times when opening app.
-        // api?.let { expandable[it.name]?.list?.list?.isNotEmpty() } == true
-        val currentPage = page.value
+        preferredApiName: String?,
+        forceReload: Boolean = true,
+        fromUI: Boolean = false
+    ) =
+        ioSafe {
+            //println("trying to load $preferredApiName")
+            // Since plugins are loaded in stages this function can get called multiple times.
+            // The issue with this is that the homepage may be fetched multiple times while the first request is loading
+            // api?.let { expandable[it.name]?.list?.list?.isNotEmpty() } == true
+            val currentPage = page.value
 
-        // if we don't need to reload and we have a valid homepage loaded return
-        val currentLoading = isCurrentlyLoadingName
-        if (!forceReload && (currentPage is Resource.Success && currentPage.value.isNotEmpty())) {
-            return@ioSafe
-        }
+            // if we don't need to reload and we have a valid homepage or currently loading the same thing then return
+            val currentLoading = isCurrentlyLoadingName
+            if (!forceReload && (currentPage is Resource.Success && currentPage.value.isNotEmpty() || (currentLoading != null && currentLoading == preferredApiName))) {
+                return@ioSafe
+            }
 
-        val api = getApiFromNameNull(preferredApiName)
-        if (preferredApiName == noneApi.name) {
-            if (fromUI) DataStoreHelper.currentHomePage = noneApi.name
-            loadAndCancel(noneApi)
-        } else if (preferredApiName == randomApi.name) {
-            val validAPIs = context?.filterProviderByPreferredMedia()
-            if (validAPIs.isNullOrEmpty()) {
+            val api = getApiFromNameNull(preferredApiName)
+            if (preferredApiName == noneApi.name) {
+                if (fromUI) DataStoreHelper.currentHomePage = noneApi.name
                 loadAndCancel(noneApi)
+            } else if (preferredApiName == randomApi.name) {
+                val validAPIs = context?.filterProviderByPreferredMedia()
+                if (validAPIs.isNullOrEmpty()) {
+                    loadAndCancel(noneApi)
+                } else {
+                    val apiRandom = validAPIs.random()
+                    loadAndCancel(apiRandom)
+                    if (fromUI) DataStoreHelper.currentHomePage = apiRandom.name
+                }
+            } else if (api == null) {
+                if (PluginManager.loadedOnlinePlugins || PluginManager.isSafeMode()) {
+                    loadAndCancel(noneApi)
+                } else {
+                    _page.postValue(Resource.Loading())
+                }
             } else {
-                val apiRandom = validAPIs.random()
-                loadAndCancel(apiRandom)
-                if (fromUI) DataStoreHelper.currentHomePage = apiRandom.name
+                if (fromUI) DataStoreHelper.currentHomePage = api.name
+                loadAndCancel(api)
             }
-        } else if (api == null) {
-            if (PluginManager.loadedOnlinePlugins || PluginManager.isSafeMode()) {
-                loadAndCancel(noneApi)
-            } else {
-                _page.postValue(Resource.Loading())
-            }
-        } else {
-            if (fromUI) DataStoreHelper.currentHomePage = api.name
-            loadAndCancel(api)
+            reloadAccount()
         }
-        reloadAccount()
-    }
+}
+    fun loadAndCancel(
+        preferredApiName: String?,
+        forceReload: Boolean = true,
+        fromUI: Boolean = false
+    ) =
+        ioSafe {
+            //println("trying to load $preferredApiName")
+            // Since plugins are loaded in stages this function can get called multiple times.
+            // The issue with this is that the homepage may be fetched multiple times while the first request is loading
+            // api?.let { expandable[it.name]?.list?.list?.isNotEmpty() } == true
+            val currentPage = page.value
+
+            // if we don't need to reload and we have a valid homepage or currently loading the same thing then return
+            val currentLoading = isCurrentlyLoadingName
+            if (!forceReload && (currentPage is Resource.Success && currentPage.value.isNotEmpty() || (currentLoading != null && currentLoading == preferredApiName))) {
+                return@ioSafe
+            }
+
+            val api = getApiFromNameNull(preferredApiName)
+            if (preferredApiName == noneApi.name) {
+                if (fromUI) DataStoreHelper.currentHomePage = noneApi.name
+                loadAndCancel(noneApi)
+            } else if (preferredApiName == randomApi.name) {
+                val validAPIs = context?.filterProviderByPreferredMedia()
+                if (validAPIs.isNullOrEmpty()) {
+                    loadAndCancel(noneApi)
+                } else {
+                    val apiRandom = validAPIs.random()
+                    loadAndCancel(apiRandom)
+                    if (fromUI) DataStoreHelper.currentHomePage = apiRandom.name
+                }
+            } else if (api == null) {
+                if (PluginManager.loadedOnlinePlugins || PluginManager.isSafeMode()) {
+                    loadAndCancel(noneApi)
+                } else {
+                    _page.postValue(Resource.Loading())
+                }
+            } else {
+                if (fromUI) DataStoreHelper.currentHomePage = api.name
+                loadAndCancel(api)
+            }
+            reloadAccount()
+        }
 }
