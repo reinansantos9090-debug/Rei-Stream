@@ -516,7 +516,7 @@ class HomeViewModel : ViewModel() {
                 return@ioSafe
             }
 
-            val api = getApiFromNameNull(preferredApiName)
+                        val api = getApiFromNameNull(preferredApiName)
             if (preferredApiName == noneApi.name) {
                 // just set to random
                 if (fromUI) DataStoreHelper.currentHomePage = noneApi.name
@@ -553,12 +553,13 @@ class HomeViewModel : ViewModel() {
                     }
 
                     _page.postValue(Resource.Loading())
-                    if (preferredApiName != null) {
-                        _apiName.postValue(preferredApiName)
-                    }
                 }
             } else {
                 // if the api is found, then set it to it and save key
                 if (fromUI) DataStoreHelper.currentHomePage = api.name
                 loadAndCancel(api)
             }
+            reloadAccount()
+        }
+    }
+}
