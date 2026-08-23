@@ -98,8 +98,18 @@ data class PluginWrapper(
 object RepositoryManager {
     const val ONLINE_PLUGINS_FOLDER = "Extensions"
     val PREBUILT_REPOSITORIES: Array<RepositoryData> by lazy {
-        getKey<Array<RepositoryData>>("PREBUILT_REPOSITORIES") ?: emptyArray()
-    }
+    arrayOf(
+        RepositoryData(
+            "Rei-Stream Repositório PT-BR",
+            "https://raw.githubusercontent.com/recloudstream/cloudstream-extensions-br/builds/repo.json"
+        ),
+        RepositoryData(
+            "English Providers",
+            "https://raw.githubusercontent.com/recloudstream/cloudstream-extensions/builds/repo.json"
+        )
+    )
+}
+
     private val GH_REGEX =
         Regex("^https://raw.githubusercontent.com/([A-Za-z0-9-]+)/([A-Za-z0-9_.-]+)/(.*)$")
 
