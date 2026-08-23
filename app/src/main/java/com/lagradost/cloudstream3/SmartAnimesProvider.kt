@@ -1,7 +1,7 @@
 package com.lagradost.cloudstream3
 
 import com.lagradost.cloudstream3.utils.ExtractorLink
-import com.lagradost.cloudstream3.utils.Qualities
+import com.lagradost.cloudstream3.utils.loadExtractor
 import org.jsoup.nodes.Element
 
 class SmartAnimesProvider : MainAPI() {
@@ -52,23 +52,16 @@ class SmartAnimesProvider : MainAPI() {
 
     override suspend fun loadLinks(
         data: String,
-        isCdn: Boolean,
+        isCasting: Boolean,
+        subtitleCallback: (SubtitleFile) -> Unit,
         callback: (ExtractorLink) -> Unit
     ): Boolean {
         val document = app.get(data).document
         val iframeUrl = document.selectFirst("iframe")?.attr("src")
 
         if (iframeUrl != null) {
-            callback.invoke(
-                ExtractorLink(
-                    source = this.name,
-                    name = this.name,
-                    url = iframeUrl,
-                    referer = mainUrl,
-                    quality = Qualities.Unknown.value,
-                    isM3u8 = false
-                )
-            )
+            // Utilizando o método atualizado exigido pelas versões mais novas do aplicativo
+            loadExtractor(iframeUrl, mainUrl, subtitleCallback, callback)
             return true
         }
         return false
