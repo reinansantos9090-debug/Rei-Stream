@@ -101,7 +101,7 @@ object RepositoryManager {
         arrayOf(
             RepositoryData(
                 "Rei Anime",
-                "https://is.gd/reianime"
+                "https://raw.githubusercontent.com/reinansantos9090-debug/Rei-Stream-Extensions/builds/repo.json"
             )
         )
     }
