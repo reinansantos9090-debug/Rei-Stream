@@ -1,0 +1,15 @@
+// Código no Rei-Stream para carregar o plugin da pasta assets
+fun loadLocalPlugins(context: Context) {
+    val assetManager = context.assets
+    val pluginFile = File(context.filesDir, "SmartAnimes.cs3")
+
+    // Copia o .cs3 dos assets para o armazenamento do app
+    assetManager.open("plugins/SmartAnimes.cs3").use { input ->
+        FileOutputStream(pluginFile).use { output ->
+            input.copyTo(output)
+        }
+    }
+
+    // Carrega o plugin diretamente no sistema de extensões
+    PluginManager.loadPlugin(pluginFile)
+}
