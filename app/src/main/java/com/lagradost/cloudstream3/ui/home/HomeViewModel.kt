@@ -510,7 +510,7 @@ class HomeViewModel : ViewModel() {
             // api?.let { expandable[it.name]?.list?.list?.isNotEmpty() } == true
             val currentPage = page.value
 
-            // if we don't need to reload and we have a valid homepage or currently loading the same thing then return
+                        // if we don't need to reload and we have a valid homepage or currently loading the same thing then return
             val currentLoading = isCurrentlyLoadingName
             if (!forceReload && (currentPage is Resource.Success && currentPage.value.isNotEmpty() || (currentLoading != null && currentLoading == preferredApiName))) {
                 return@ioSafe
@@ -538,15 +538,27 @@ class HomeViewModel : ViewModel() {
                 if (PluginManager.loadedOnlinePlugins || PluginManager.isSafeMode()) {
                     loadAndCancel(noneApi)
                 } else {
+                    val smartDoc = app.get("https://smartanimes.net").document
+                    val smartItems = smartDoc.select("article, div.poster, div.item").mapNotNull { element ->
+                        val title = element.selectFirst("h3, h2, .title, a")?.text() ?: return@mapNotNull null
+                        val href = element.selectFirst("a")?.attr("href") ?: return@mapNotNull null
+                        val posterUrl = element.selectFirst("img")?.attr("src")
+                        newAnimeSearchResponse(title, href, TvType.Anime) {
+                            this.posterUrl = posterUrl
+                        }
+                    }
+                    if (smartItems.isNotEmpty()) {
+                        _page.postValue(Resource.Success(smartItems))
+                        return@ioSafe
+                    }
+
                     _page.postValue(Resource.Loading())
-                    if (preferredApiName != null)
+                    if (preferredApiName != null) {
                         _apiName.postValue(preferredApiName)
+                    }
                 }
             } else {
                 // if the api is found, then set it to it and save key
                 if (fromUI) DataStoreHelper.currentHomePage = api.name
                 loadAndCancel(api)
             }
-            reloadAccount()
-        }
-}
