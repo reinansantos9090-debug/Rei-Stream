@@ -1,5 +1,8 @@
 package com.lagradost.cloudstream3.ui.home
 
+import com.lagradost.cloudstream3.app
+import com.lagradost.cloudstream3.TvType
+import com.lagradost.cloudstream3.newAnimeSearchResponse
 import android.os.Build
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -516,14 +519,11 @@ class HomeViewModel : ViewModel() {
                 return@ioSafe
             }
 
-                        val api = getApiFromNameNull(preferredApiName)
+             val api = getApiFromNameNull(preferredApiName)
             if (preferredApiName == noneApi.name) {
-                // just set to random
                 if (fromUI) DataStoreHelper.currentHomePage = noneApi.name
                 loadAndCancel(noneApi)
             } else if (preferredApiName == randomApi.name) {
-                // randomize the api, if none exist like if not loaded or not installed
-                // then use nothing
                 val validAPIs = context?.filterProviderByPreferredMedia()
                 if (validAPIs.isNullOrEmpty()) {
                     loadAndCancel(noneApi)
@@ -533,29 +533,12 @@ class HomeViewModel : ViewModel() {
                     if (fromUI) DataStoreHelper.currentHomePage = apiRandom.name
                 }
             } else if (api == null) {
-                // API is not found aka not loaded or removed, post the loading
-                // progress if waiting for plugins, otherwise nothing
                 if (PluginManager.loadedOnlinePlugins || PluginManager.isSafeMode()) {
                     loadAndCancel(noneApi)
                 } else {
-                    val smartDoc = app.get("https://smartanimes.net").document
-                    val smartItems = smartDoc.select("article, div.poster, div.item").mapNotNull { element ->
-                        val title = element.selectFirst("h3, h2, .title, a")?.text() ?: return@mapNotNull null
-                        val href = element.selectFirst("a")?.attr("href") ?: return@mapNotNull null
-                        val posterUrl = element.selectFirst("img")?.attr("src")
-                        newAnimeSearchResponse(title, href, TvType.Anime) {
-                            this.posterUrl = posterUrl
-                        }
-                    }
-                    if (smartItems.isNotEmpty()) {
-                        _page.postValue(Resource.Success(smartItems))
-                        return@ioSafe
-                    }
-
                     _page.postValue(Resource.Loading())
                 }
             } else {
-                // if the api is found, then set it to it and save key
                 if (fromUI) DataStoreHelper.currentHomePage = api.name
                 loadAndCancel(api)
             }
