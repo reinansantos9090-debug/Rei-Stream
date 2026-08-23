@@ -11,7 +11,7 @@ class SmartAnimesProvider : MainAPI() {
     override val hasMainPage = true
     override val supportedTypes = setOf(TvType.Anime)
 
-    override async fun search(query: String): List<SearchResponse> {
+    override suspend fun search(query: String): List<SearchResponse> {
         val url = "$mainUrl/?s=$query"
         val document = app.get(url).document
         return document.select("article, div.poster, div.item").mapNotNull {
@@ -29,7 +29,7 @@ class SmartAnimesProvider : MainAPI() {
         }
     }
 
-    override async fun load(url: String): LoadResponse {
+    override suspend fun load(url: String): LoadResponse {
         val document = app.get(url).document
         val title = document.selectFirst("h1, .entry-title")?.text() ?: "SmartAnimes"
         val poster = document.selectFirst("div.poster img, img.wp-post-image")?.attr("src")
@@ -50,22 +50,23 @@ class SmartAnimesProvider : MainAPI() {
         }
     }
 
-    override async fun loadLinks(
+    override suspend fun loadLinks(
         data: String,
         isCdn: Boolean,
-        handler: (ExtractorLink) -> Unit
+        callback: (ExtractorLink) -> Unit
     ): Boolean {
         val document = app.get(data).document
         val iframeUrl = document.selectFirst("iframe")?.attr("src")
 
         if (iframeUrl != null) {
-            handler.invoke(
+            callback.invoke(
                 ExtractorLink(
-                    name = this.name,
                     source = this.name,
+                    name = this.name,
                     url = iframeUrl,
                     referer = mainUrl,
-                    quality = Qualities.Unknown.value
+                    quality = Qualities.Unknown.value,
+                    isM3u8 = false
                 )
             )
             return true
