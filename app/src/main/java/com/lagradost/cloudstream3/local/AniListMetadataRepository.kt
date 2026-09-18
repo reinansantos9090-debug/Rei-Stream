@@ -81,4 +81,17 @@ class AniListMetadataRepository(private val context: Context) {
     private companion object { const val CACHE_NAME = "rei_stream_anilist_metadata"; const val ENDPOINT = "https://graphql.anilist.co" }
 }
 
-data class LocalAnimeMetadata(val id: Int, val title: String, val alternateTitles: List<String>, val description: String?, val genres: List<String>, val year: Int?, val status: String?, val totalEpisodes: Int?, val posterUrl: String?, val bannerUrl: String?, val posterPath: String?)
+data class LocalAnimeMetadata(
+    val id: Int,
+    val title: String,
+    val alternateTitles: List<String>,
+    val description: String?,
+    val genres: List<String>,
+    val year: Int?,
+    val status: String?,
+    val totalEpisodes: Int?,
+    val posterUrl: String?,
+    val bannerUrl: String?,
+    // Metadata is created before its poster download completes or if the download fails.
+    val posterPath: String? = null,
+)
