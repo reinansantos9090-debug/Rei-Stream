@@ -1,10 +1,1 @@
-CloudStream-3 ju lejon të shikoni dhe shkarkoni filma, seriale televizive dhe anime.
-
-Aplikacioni vjen pa asnjë reklamë dhe analitikë
-dhe suporton faqe të shumta trailer-ash dhe filmash, dhe më shumë, p.sh.
-
-Të ruajturat
-
-Shkarkime titrash
-
-Chromecast
+Reistream organizes anime videos stored on your device. Scan your local library, group episodes by series, and play them with the built-in player.

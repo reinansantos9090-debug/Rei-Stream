@@ -1,1 +1,1 @@
-串流和下载电影、剧集和动漫。
+Organize and play your local anime library.
