@@ -1,29 +1,15 @@
-# Organizador local de anime
+# Rei Stream — biblioteca pessoal local
 
-O Rei-Stream está migrando de um catálogo baseado em extensões para uma biblioteca local.
-O player existente continua sendo o player usado para abrir os episódios; o organizador só
-descobre e agrupa os vídeos já presentes no aparelho.
+Rei Stream reproduz **somente arquivos locais**. A internet é uma futura camada opt-in de metadados e capas; nenhum nome de arquivo é enviado automaticamente e ela nunca fornece o vídeo.
 
-## Privacidade e permissão
+## Pastas e privacidade
 
-O primeiro passo é pedir a permissão de vídeos do Android (`READ_MEDIA_VIDEO`, ou a permissão
-de armazenamento em aparelhos antigos). A varredura lê o índice `MediaStore`: nome, tamanho,
-duração e data de modificação. Ela usa `content://` URIs, não caminhos absolutos, e não envia
-arquivos, miniaturas ou nomes para a rede.
+`LocalLibraryRepository` usa o seletor de pastas do Android (Storage Access Framework). Cada URI de árvore é persistida com permissão somente de leitura e a varredura percorre apenas árvores escolhidas pelo usuário. Isso permite múltiplas pastas sem `MANAGE_EXTERNAL_STORAGE` para a biblioteca nova.
 
-## Como os títulos são organizados
+## Indexação
 
-`LocalAnimeTitleParser` remove grupos de release, codecs e resoluções e separa sufixos comuns de
-episódio. Em seguida, `LocalAnimeCatalog` agrupa episódios pela chave normalizada do título. O
-parser é propositalmente conservador: ele não tenta adivinhar gênero, sinopse ou uma capa.
+`LocalAnimeTitleParser` limpa grupos, resolução, codec e tags de release, reconhece `S01E03`, `EP03`, números simples, filmes, OVAs, ONAs e especiais. `LocalLibraryIndexer` agrupa pelo título normalizado, ordena temporada/episódio e sinaliza duplicatas sem apagar arquivos. A API retorna arquivos inacessíveis para uma tela de recuperação/manual association.
 
-## Próximas etapas da migração
+## Próximos passos de UI
 
-1. Exibir as séries retornadas por `LocalAnimeCatalog` na aba Biblioteca e abrir seus URIs no
-   player atual.
-2. Adicionar uma fonte de metadados **opt-in** com cache persistente: uma busca por série e uma
-   capa baixada uma única vez. Sem uma confirmação do usuário, não haverá consulta à internet.
-3. Adicionar o classificador inteligente local para sugerir agrupamentos e permitir corrigir
-   título/gênero. Correções manuais terão prioridade e nenhuma sugestão será aplicada em silêncio.
-4. Depois que a biblioteca local substituir as telas, retirar o carregamento, repositórios e UI
-   de plugins em uma migração separada e testável.
+A tela de Biblioteca deve abrir `ACTION_OPEN_DOCUMENT_TREE`, chamar `addFolder`, executar `scan` fora da UI e apresentar `LocalScanResult`. Os `content://` URI retornados são compatíveis com o `DownloadedPlayerActivity` existente, preservando controles, legendas e faixas locais. Metadados, capas e IA continuam deliberadamente opt-in, com cache persistente e sem chaves embutidas.

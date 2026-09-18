@@ -55,6 +55,19 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/local_library_category">
+        <Preference
+            android:icon="@drawable/ic_baseline_add_24"
+            android:key="@string/local_library_add_folder_key"
+            android:summary="@string/local_library_add_folder_summary"
+            android:title="@string/local_library_add_folder" />
+        <Preference
+            android:icon="@drawable/ic_refresh"
+            android:key="@string/local_library_refresh_key"
+            android:summary="@string/local_library_refresh_summary"
+            android:title="@string/local_library_refresh" />
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/pref_category_bypass">
 
         <Preference

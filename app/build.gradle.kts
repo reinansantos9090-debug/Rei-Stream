@@ -137,6 +137,11 @@ android {
             "ANILIST_KEY",
             "\"" + (System.getenv("ANILIST_KEY") ?: localProperties["anilist.key"]) + "\""
         )
+        buildConfigField(
+            "String",
+            "GOOGLE_WEB_CLIENT_ID",
+            "\"" + (System.getenv("GOOGLE_WEB_CLIENT_ID") ?: localProperties["google.web_client_id"] ?: "") + "\""
+        )
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -238,6 +243,9 @@ dependencies {
     implementation(libs.preference.ktx)
     implementation(libs.material)
     implementation(libs.constraintlayout)
+    implementation(libs.credentials)
+    implementation(libs.credentials.play.services.auth)
+    implementation(libs.googleid)
 
     // Coil Image Loading
     implementation(libs.bundles.coil)

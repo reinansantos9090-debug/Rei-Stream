@@ -6,6 +6,12 @@
         android:title="@string/pref_category_accounts">
 
         <Preference
+            android:icon="@drawable/ic_outline_account_circle_24"
+            android:key="@string/google_account_key"
+            android:summary="@string/google_account_summary"
+            android:title="@string/google_account" />
+
+        <Preference
             android:icon="@drawable/mal_logo"
             android:key="@string/mal_key" />
 

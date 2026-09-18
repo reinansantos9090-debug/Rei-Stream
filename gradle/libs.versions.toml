@@ -12,6 +12,8 @@ coil = { strictly = "3.3.0" } # Later versions require jvmTarget 11 or later
 colorpicker = "6b46b49"
 conscryptAndroid = { strictly = "2.5.2" } # 2.5.3 crashes everything
 constraintlayout = "2.2.1"
+credentials = "1.5.0"
+googleid = "1.1.1"
 coreKtx = "1.18.0"
 cryptography = "0.6.0"
 desugar_jdk_libs_nio = "2.1.5"
@@ -76,6 +78,9 @@ coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version
 colorpicker = { module = "com.github.recloudstream:color-picker-android", version.ref = "colorpicker" }
 conscrypt-android = { module = "org.conscrypt:conscrypt-android", version.ref = "conscryptAndroid" }
 constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
+credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
+googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 core = { module = "androidx.test:core" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 cryptography-core = { module = "dev.whyoleg.cryptography:cryptography-core", version.ref = "cryptography" }
