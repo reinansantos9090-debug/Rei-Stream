@@ -14,6 +14,7 @@ import androidx.core.content.edit
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreference
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +23,7 @@ import com.lagradost.cloudstream3.CommonActivity.onDialogDismissedEvent
 import com.lagradost.cloudstream3.CommonActivity.showToast
 import com.lagradost.cloudstream3.ErrorLoadingException
 import com.lagradost.cloudstream3.R
+import com.lagradost.cloudstream3.account.GoogleAccountManager
 import com.lagradost.cloudstream3.databinding.AccountManagmentBinding
 import com.lagradost.cloudstream3.databinding.AccountSwitchBinding
 import com.lagradost.cloudstream3.databinding.AddAccountInputBinding
@@ -70,6 +72,7 @@ import com.lagradost.cloudstream3.utils.UIHelper.showProgress
 import com.lagradost.cloudstream3.utils.setText
 import com.lagradost.cloudstream3.utils.txt
 import qrcode.QRCode
+import kotlinx.coroutines.launch
 
 class SettingsAccount : BasePreferenceFragmentCompat(), BiometricCallback {
     companion object {
@@ -445,6 +448,24 @@ class SettingsAccount : BasePreferenceFragmentCompat(), BiometricCallback {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         hideKeyboard()
         setPreferencesFromResource(R.xml.settings_account, rootKey)
+
+        getPref(R.string.google_account_key)?.setOnPreferenceClickListener {
+            val context = context ?: return@setOnPreferenceClickListener false
+            viewLifecycleOwner.lifecycleScope.launch {
+                val account = GoogleAccountManager(context)
+                if (account.signedInEmail != null) {
+                    account.signOut()
+                    showToast("Conta Google desconectada.")
+                } else {
+                    runCatching { account.signIn() }.onSuccess { profile ->
+                        showToast("Conectado como ${profile.email}")
+                    }.onFailure { error ->
+                        showToast(error.message ?: "Não foi possível entrar com o Google.")
+                    }
+                }
+            }
+            true
+        }
 
         //Hides the security  category on TV as it's only Biometric for now
         getPref(R.string.pref_category_security_key)?.hideOn(TV or EMULATOR)
