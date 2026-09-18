@@ -26,6 +26,8 @@ import com.lagradost.cloudstream3.databinding.AddSiteInputBinding
 import com.lagradost.cloudstream3.mvvm.logError
 import com.lagradost.cloudstream3.mvvm.safe
 import com.lagradost.cloudstream3.network.initClient
+import com.lagradost.cloudstream3.local.LocalLibraryRepository
+import com.lagradost.cloudstream3.local.LocalLibrarySync
 import com.lagradost.cloudstream3.ui.BasePreferenceFragmentCompat
 import com.lagradost.cloudstream3.ui.settings.Globals.EMULATOR
 import com.lagradost.cloudstream3.ui.settings.Globals.TV
@@ -53,6 +55,8 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 // Change local language settings in the app.
@@ -181,10 +185,44 @@ class SettingsGeneral : BasePreferenceFragmentCompat() {
         pickDownloadPath(uri, path)
     }
 
+    private val localLibraryPicker = getChooseFolderLauncher { uri, _ ->
+        val context = context ?: return@getChooseFolderLauncher
+        if (uri == null) return@getChooseFolderLauncher
+        LocalLibraryRepository(context).addFolder(uri)
+        refreshLocalLibrary()
+    }
+
+    private fun refreshLocalLibrary() {
+        val context = context ?: return
+        showToast("Atualizando sua biblioteca local…")
+        viewLifecycleOwner.lifecycleScope.launch {
+            val result = runCatching { LocalLibrarySync(context).refresh() }
+            result.onSuccess { library ->
+                showToast("Biblioteca atualizada: ${library.series.size} animes encontrados.")
+            }.onFailure {
+                logError(it)
+                showToast("Não foi possível atualizar a biblioteca. Verifique as pastas selecionadas.")
+            }
+        }
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         hideKeyboard()
         setPreferencesFromResource(R.xml.settings_general, rootKey)
         val settingsManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
+
+        getPref(R.string.local_library_add_folder_key)?.setOnPreferenceClickListener {
+            localLibraryPicker.launch(Uri.EMPTY)
+            true
+        }
+        getPref(R.string.local_library_open_key)?.setOnPreferenceClickListener {
+            navigate(R.id.action_navigation_settings_general_to_localAnimeLibraryFragment)
+            true
+        }
+        getPref(R.string.local_library_refresh_key)?.setOnPreferenceClickListener {
+            refreshLocalLibrary()
+            true
+        }
 
         fun getCurrent(): MutableList<CustomSite> {
             return getKey<Array<CustomSite>>(USER_PROVIDER_API)?.toMutableList()

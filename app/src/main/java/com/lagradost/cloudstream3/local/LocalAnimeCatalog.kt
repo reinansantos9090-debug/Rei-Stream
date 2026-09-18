@@ -62,10 +62,6 @@ class LocalAnimeCatalog(private val context: Context) {
                 }
             }
         }
-        return videos.groupBy { LocalAnimeTitleParser.seriesKey(it.parsed.seriesTitle) }
-            .map { (key, episodes) ->
-                LocalAnimeSeries(key, episodes.first().parsed.seriesTitle, episodes)
-            }
-            .sortedBy { it.title.lowercase() }
+        return LocalLibraryIndexer.index(videos).series
     }
 }
