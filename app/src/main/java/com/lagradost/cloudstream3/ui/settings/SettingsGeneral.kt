@@ -187,10 +187,11 @@ class SettingsGeneral : BasePreferenceFragmentCompat() {
     }
 
     private val localLibraryPicker = getChooseReadFolderLauncher { uri ->
-        val context = context ?: return@getChooseReadFolderLauncher
-        LocalLibraryRepository(context).addFolder(uri)
-        refreshLocalLibrary()
-    }
+    val context = context ?: return@getChooseReadFolderLauncher
+    if (uri == null) return@getChooseReadFolderLauncher
+    LocalLibraryRepository(context).addFolder(uri)
+    refreshLocalLibrary()
+}
 
     private fun refreshLocalLibrary() {
         val context = context ?: return
@@ -216,7 +217,7 @@ class SettingsGeneral : BasePreferenceFragmentCompat() {
             true
         }
         getPref(R.string.local_library_open_key)?.setOnPreferenceClickListener {
-            navigate(R.id.action_navigation_settings_general_to_localAnimeLibraryFragment)
+            findNavController().navigate(R.id.action_navigation_settings_general_to_localAnimeLibraryFragment)
             true
         }
         getPref(R.string.local_library_refresh_key)?.setOnPreferenceClickListener {
