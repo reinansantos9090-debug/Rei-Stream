@@ -38,6 +38,7 @@ import com.lagradost.cloudstream3.ui.settings.SettingsFragment.Companion.setPadd
 import com.lagradost.cloudstream3.ui.settings.SettingsFragment.Companion.setToolBarScrollFlags
 import com.lagradost.cloudstream3.ui.settings.SettingsFragment.Companion.setUpToolbar
 import com.lagradost.cloudstream3.ui.settings.utils.getChooseFolderLauncher
+import com.lagradost.cloudstream3.ui.settings.utils.getChooseReadFolderLauncher
 import com.lagradost.cloudstream3.utils.BatteryOptimizationChecker.isAppRestricted
 import com.lagradost.cloudstream3.utils.BatteryOptimizationChecker.showBatteryOptimizationDialog
 import com.lagradost.cloudstream3.utils.SingleSelectionHelper.showBottomDialog
@@ -185,9 +186,8 @@ class SettingsGeneral : BasePreferenceFragmentCompat() {
         pickDownloadPath(uri, path)
     }
 
-    private val localLibraryPicker = getChooseFolderLauncher { uri, _ ->
-        val context = context ?: return@getChooseFolderLauncher
-        if (uri == null) return@getChooseFolderLauncher
+    private val localLibraryPicker = getChooseReadFolderLauncher { uri ->
+        val context = context ?: return@getChooseReadFolderLauncher
         LocalLibraryRepository(context).addFolder(uri)
         refreshLocalLibrary()
     }
@@ -213,6 +213,10 @@ class SettingsGeneral : BasePreferenceFragmentCompat() {
 
         getPref(R.string.local_library_add_folder_key)?.setOnPreferenceClickListener {
             localLibraryPicker.launch(Uri.EMPTY)
+            true
+        }
+        getPref(R.string.local_library_open_key)?.setOnPreferenceClickListener {
+            navigate(R.id.action_navigation_settings_general_to_localAnimeLibraryFragment)
             true
         }
         getPref(R.string.local_library_refresh_key)?.setOnPreferenceClickListener {

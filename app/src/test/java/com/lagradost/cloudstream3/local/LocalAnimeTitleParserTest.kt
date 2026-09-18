@@ -42,4 +42,16 @@ class LocalAnimeTitleParserTest {
         assertEquals(LocalMediaKind.OVA, parsed.kind)
         assertEquals(2, parsed.episode)
     }
+
+    @Test
+    fun `groups local episodes and only flags duplicates`() {
+        fun video(name: String) = LocalAnimeVideo("content://local/$name", name, 1, 0, 0, LocalAnimeTitleParser.parse(name))
+        val indexed = LocalLibraryIndexer.index(
+            listOf(video("Naruto S01E01.mkv"), video("Naruto S01E02.mkv"), video("Naruto S01E01.mp4"))
+        )
+
+        assertEquals(1, indexed.series.size)
+        assertEquals(3, indexed.series.single().episodes.size)
+        assertEquals(1, indexed.duplicates.size)
+    }
 }

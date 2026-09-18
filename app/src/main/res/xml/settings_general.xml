@@ -57,6 +57,11 @@
 
     <PreferenceCategory android:title="@string/local_library_category">
         <Preference
+            android:icon="@drawable/ic_baseline_play_arrow_24"
+            android:key="@string/local_library_open_key"
+            android:summary="@string/local_library_open_summary"
+            android:title="@string/local_library_open" />
+        <Preference
             android:icon="@drawable/ic_baseline_add_24"
             android:key="@string/local_library_add_folder_key"
             android:summary="@string/local_library_add_folder_summary"

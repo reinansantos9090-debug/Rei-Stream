@@ -31,10 +31,13 @@
     <string name="local_library_category">Biblioteca local</string>
     <string name="local_library_add_folder_key">local_library_add_folder</string>
     <string name="local_library_refresh_key">local_library_refresh</string>
+    <string name="local_library_open_key">local_library_open</string>
     <string name="local_library_add_folder">Adicionar pasta de animes</string>
     <string name="local_library_add_folder_summary">Escolha uma pasta; somente ela será lida.</string>
     <string name="local_library_refresh">Atualizar biblioteca</string>
     <string name="local_library_refresh_summary">Localiza vídeos novos e baixa capas ausentes do AniList.</string>
+    <string name="local_library_open">Abrir minha biblioteca</string>
+    <string name="local_library_open_summary">Veja e reproduza os episódios encontrados nas pastas autorizadas.</string>
     <string name="google_account_key">google_account</string>
     <string name="google_account">Entrar com Google</string>
     <string name="google_account_summary">Opcional. Sua biblioteca local não é enviada ao Google.</string>
