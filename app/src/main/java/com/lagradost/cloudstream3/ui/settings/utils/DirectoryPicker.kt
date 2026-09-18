@@ -28,3 +28,12 @@ fun Fragment.getChooseFolderLauncher(dirSelected: (uri: Uri?, path: String?) -> 
         // filePath should only be used for cosmetic purposes.
         dirSelected(uri, filePath)
     }
+
+/** Folder picker for the local library: it asks only for the read permission it needs. */
+fun Fragment.getChooseReadFolderLauncher(dirSelected: (uri: Uri?) -> Unit) =
+    registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        if (uri == null) return@registerForActivityResult
+        val context = context ?: CloudStreamApp.context ?: return@registerForActivityResult
+        context.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        dirSelected(uri)
+    }
