@@ -17,5 +17,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "CloudStream"
+rootProject.name = "Reistream"
 include(":app", ":library", ":docs")

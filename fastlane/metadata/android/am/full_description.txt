@@ -1,10 +1,1 @@
-CloudStream-3 ፊልሞችን፣ ተከታታይ ቲቪ እና አኒሜ በዥረት እንዲመለከቱ እና እንዲያወርዱ ያስችልዎታል።
-
-መተግበሪያው ያለ ምንም ማስታወቂያዎች እና ትንታኔዎች እና
-በርካታ የፊልም ማስታወቂያ እና ሳይቶችን ይደግፋል፣ እና ሌሎችም፣ ለምሳሌ
-
-ዕልባቶች
-
-የግርጌ ጽሑፍ ውርዶች
-
-Chromecast ድጋፍ
+Reistream organizes anime videos stored on your device. Scan your local library, group episodes by series, and play them with the built-in player.

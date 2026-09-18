@@ -1,10 +1,1 @@
-CloudStream-3 ļauj straumēt un lejupielādēt filmas, seriālus, raidījumus un anime.
-
-Lietotne nesatur reklāmu un analītiku un
-atbalsta daudzas reklāmrullīšu un filmu vietnes, kā arī, piem.
-
-Grāmatzīmes
-
-Subtitru lejupielādi
-
-Chromecast
+Reistream organizes anime videos stored on your device. Scan your local library, group episodes by series, and play them with the built-in player.
